@@ -63,6 +63,8 @@ function Rsync(config) {
     this._destination = '';
     this._dest_original = '';
 
+    this._files_from = '';
+
     // ordered list of file patterns to include/exclude
     this._patterns = [];
 
@@ -417,6 +419,9 @@ Rsync.prototype.args = function() {
         args.push(escapeFileArg(this.destination()));
     }
 
+    if (this.filesFrom()) 
+        args.push(`--files-from=${this.filesFrom()}`);
+
     return args;
 };
 
@@ -601,6 +606,8 @@ createValueAccessor('executableShell');
  */
 createValueAccessor('destination');
 createValueAccessor('destOriginal');
+
+createValueAccessor('filesFrom');
 
 /**
  * Add one or more sources for the command or get the list of configured
