@@ -59,7 +59,9 @@ function Rsync(config) {
 
     // source(s) and destination
     this._sources     = [];
+    this._src_original  = [];
     this._destination = '';
+    this._dest_original = '';
 
     // ordered list of file patterns to include/exclude
     this._patterns = [];
@@ -401,12 +403,17 @@ Rsync.prototype.args = function() {
     });
 
     // Add sources
-    if (this.source().length > 0) {
+    // Notes: No more escape if using srcOriginal()
+    if (this.srcOriginal().length > 0) {
+        args = args.concat(this.srcOriginal());
+    } else if (this.source().length > 0) {
         args = args.concat(this.source().map(escapeFileArg));
     }
 
     // Add destination
-    if (this.destination()) {
+    if (this.destOriginal()) {
+        args.push(this.destOriginal());
+    } else if (this.destination()) {
         args.push(escapeFileArg(this.destination()));
     }
 
@@ -593,6 +600,7 @@ createValueAccessor('executableShell');
  * @return {Rsync|String}
  */
 createValueAccessor('destination');
+createValueAccessor('destOriginal');
 
 /**
  * Add one or more sources for the command or get the list of configured
@@ -609,6 +617,9 @@ createValueAccessor('destination');
  * @return {Rsync|Array}
  */
 createListAccessor('source', '_sources');
+
+// 
+createListAccessor('srcOriginal', '_src_original');
 
 /**
  * Set the shell to use when logging in on a remote server.
