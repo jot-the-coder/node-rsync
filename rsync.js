@@ -404,10 +404,13 @@ Rsync.prototype.args = function() {
         }
     });
 
+    if (this.filesFrom()) 
+        args.push(`--files-from=${this.filesFrom()}`);
+
     // Add sources
     // Notes: No more escape if using srcOriginal()
     if (this.srcOriginal().length > 0) {
-        args = args.concat(this.srcOriginal());
+        args = args.concat(this.srcOriginal());        
     } else if (this.source().length > 0) {
         args = args.concat(this.source().map(escapeFileArg));
     }
@@ -418,9 +421,6 @@ Rsync.prototype.args = function() {
     } else if (this.destination()) {
         args.push(escapeFileArg(this.destination()));
     }
-
-    if (this.filesFrom()) 
-        args.push(`--files-from=${this.filesFrom()}`);
 
     return args;
 };
@@ -898,7 +898,7 @@ function createListAccessor(name, internal) {
         }
         else if (this[container].indexOf(value) < 0) {
             this[container].push(value);
-        }
+        }        
 
         return this;
     };
